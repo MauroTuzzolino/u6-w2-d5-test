@@ -1,5 +1,6 @@
 package maurotuzzolino.u6_w2_d5_test.services;
 
+import jakarta.persistence.EntityNotFoundException;
 import maurotuzzolino.u6_w2_d5_test.entities.User;
 import maurotuzzolino.u6_w2_d5_test.payloads.UserRegisterDTO;
 import maurotuzzolino.u6_w2_d5_test.repositories.UserRepository;
@@ -33,5 +34,10 @@ public class UserService {
 
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    public User getById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Utente non trovato con id: " + id));
     }
 }
