@@ -1,5 +1,6 @@
 package maurotuzzolino.u6_w2_d5_test.services;
 
+import jakarta.persistence.EntityNotFoundException;
 import maurotuzzolino.u6_w2_d5_test.entities.Event;
 import maurotuzzolino.u6_w2_d5_test.entities.User;
 import maurotuzzolino.u6_w2_d5_test.payloads.EventDTO;
@@ -39,5 +40,32 @@ public class EventService {
 
     public List<Event> findByOrganizerId(Long id) {
         return eventRepository.findByCreatedById(id);
+    }
+
+    public Event updateEvent(Event event, EventDTO dto) {
+        int postiVecchi = event.getTotalSeats();
+        int postiNuovi = dto.getTotalSeats();
+
+        if (postiNuovi < (postiVecchi - event.getAvailableSeats())) {
+            throw new IllegalArgumentException("Non puoi ridurre i posti totali sotto il numero di prenotazioni già effettuate.");
+        }
+
+        event.setTitle(dto.getTitle());
+        event.setDescription(dto.getDescription());
+        event.setDate(dto.getDate());
+        event.setLocation(dto.getLocation());
+        event.setTotalSeats(postiNuovi);
+
+        int differenza = postiNuovi - postiVecchi;
+        event.setAvailableSeats(event.getAvailableSeats() + differenza);
+
+        return eventRepository.save(event);
+    }
+
+    public void deleteEvent(Long id) {
+        if (!eventRepository.existsById(id)) {
+            throw new EntityNotFoundException("Evento non trovato");
+        }
+        eventRepository.deleteById(id);
     }
 }
