@@ -6,9 +6,10 @@ import maurotuzzolino.u6_w2_d5_test.entities.User;
 import maurotuzzolino.u6_w2_d5_test.payloads.EventDTO;
 import maurotuzzolino.u6_w2_d5_test.repositories.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,16 +31,12 @@ public class EventService {
         return eventRepository.save(event);
     }
 
-    public List<Event> getAll() {
-        return eventRepository.findAll();
+    public Page<Event> getAll(Pageable pageable) {
+        return eventRepository.findAll(pageable);
     }
 
     public Optional<Event> findById(Long id) {
         return eventRepository.findById(id);
-    }
-
-    public List<Event> findByOrganizerId(Long id) {
-        return eventRepository.findByCreatedById(id);
     }
 
     public Event updateEvent(Event event, EventDTO dto) {

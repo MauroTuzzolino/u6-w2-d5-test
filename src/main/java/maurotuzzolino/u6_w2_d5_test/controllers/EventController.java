@@ -8,13 +8,15 @@ import maurotuzzolino.u6_w2_d5_test.exceptions.UnauthorizedException;
 import maurotuzzolino.u6_w2_d5_test.payloads.EventDTO;
 import maurotuzzolino.u6_w2_d5_test.services.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/events")
@@ -60,8 +62,8 @@ public class EventController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Event>> getAll() {
-        return ResponseEntity.ok(eventService.getAll());
+    public ResponseEntity<Page<Event>> getAll(@PageableDefault(size = 10, sort = "date", direction = Sort.Direction.ASC) Pageable pageable) {
+        return ResponseEntity.ok(eventService.getAll(pageable));
     }
 
     @GetMapping("/{id}")
